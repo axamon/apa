@@ -1,0 +1,6 @@
+github.com/axamon/uddi v1.1.2 h1:53rATwPMOssnxD2gXItYsiqz166quLgVP5pqxd8epW4=
+github.com/axamon/uddi v1.1.2/go.mod h1:hrbPqezeZrTm7Sbj4OIhn51R2Z9mIhwlthZyaBz+pPM=
+github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
+github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
+github.com/irob/goform v0.0.0-20200730091048-a25fe0eeeab0 h1:O/VF6YYPFdz8UmXsAPGsSvHPhC3fknBJmD8paqxlX0A=
+github.com/irob/goform v0.0.0-20200730091048-a25fe0eeeab0/go.mod h1:q/JhPf+LbYQaZ5qYotHR98RyhYSkfP1N4/NyLwcobTQ=

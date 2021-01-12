@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <title>Minuta {{ .ID}}</title>
+</head>
+
+<section id="testominuta">
+    <h1>Minuta ID: {{ .ID}} stato: {{ if .StatoMinuta}} Approvata da tutti {{ else }} Non approvata {{ end }}</h1>
+    <hr>
+    <h3>Contenuto:</h3>
+    <p>{{.Testo}}</p>
+    <hr>
+</section>
+
+<section id="actionpoints">
+    <h3>Action Points:</h3>
+    {{ range .AP}}
+        <div>
+        {{.ID}}
+        </div>
+        <div>
+            <p>{{ .Accountable}} ingaggia {{ .Responsible}} per {{ .Cosa }} da terminare entro {{ .EntroQuando.Format "2006-01-02 15:04" }}</p> 
+            <p>Saranno necessarie {{ .OreUomo}} ore uomo e un badget di {{.Budget}}</p>
+            <p>{{if .Approvato}} Action Point Approvato {{ else }} Action Point NON approvato {{ end }}</p>
+        </div>
+    {{ end }}
+<section>
+
+
+</html>
