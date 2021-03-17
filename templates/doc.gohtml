@@ -1,0 +1,100 @@
+{{template "header" .}}
+        <br>
+        <br>
+        <br>
+        <article>
+          <div class="container">
+            <div class="row row-cols-4">
+              <div class="col">
+                  <div class="badge bg-primary text-wrap invisible" style="width: 6rem;">
+                      <h1>ecco</h1>
+                  </div>
+                  <figure class="visible">
+                    <img src="static/gopher.jpg" alt="Trulli" style="width:70%">
+                    <figcaption>Fig.1 - Golang gopher</figcaption>
+                  </figure>
+              </div>
+              <div class="col invisible">Column</div>
+              <div class="col">
+                  <div class="badge font-monospace bg-danger text-wrap" style="width: 9rem;">
+                      {{.ID}}
+                  </div>
+              </div>
+              <div class="col"><article class="all-browsers">
+                <h1>Most Popular Browsers</h1>
+                <article class="browser">
+                  <h2>Google Chrome</h2>
+                  <p>Google Chrome is a web browser developed by Google, released in 2008. Chrome is the world's most popular web browser today!</p>
+                </article>
+                <article class="browser">
+                  <h2>Mozilla Firefox</h2>
+                  <p>Mozilla Firefox is an open-source web browser developed by Mozilla. Firefox has been the second most popular web browser since January, 2018.</p>
+                </article>
+                <article class="browser">
+                  <h2>Microsoft Edge</h2>
+                  <p>Microsoft Edge is a web browser developed by Microsoft, released in 2015. Microsoft Edge replaced Internet Explorer.</p>
+                </article>
+                <article class="browser">
+                  <p>The <abbr title="World Health Organization">WHO</abbr> was founded in 1948.</p>
+                </article>
+              </div>
+            </div>
+          </div>
+          <table class="table table-striped table-hover" style="width:70%">
+            <caption style="caption-side:top">Tabella responsabilità</caption>
+            <tr>
+              <th>Funzione</th>
+              <th>Ruolo</th>
+              <th>Age</th>
+            </tr>
+            <tr>
+              <td>CTIO</td>
+              <td>R</td>
+              <td>50</td>
+            </tr>
+            <tr>
+              <td>Eve</td>
+              <td>Jackson</td>
+              <td>94</td>
+            </tr>
+          </table> 
+          <br>
+          <p id="demo"></p>
+          <div>
+            <aside>
+              <p>The Epcot center is a theme park at Walt Disney World Resort featuring exciting attractions, international pavilions, award-winning fireworks and seasonal special events.</p>
+            </aside>
+          </div>
+          <table class="table table-striped table-hover table-dark" style="width:70%">
+            <caption style="caption-side:top">Tabella responsabilità</caption>
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">First</th>
+                <th scope="col">Last</th>
+                <th scope="col">Handle</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+              </tr>
+              <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td>@fat</td>
+              </tr>
+              <tr>
+                <th scope="row">3</th>
+                <td colspan="2">Larry the Bird</td>
+                <td>@twitter</td>
+              </tr>
+            </tbody>
+          </table>
+          <hr>
+        </article>
+{{template "footer" .}}

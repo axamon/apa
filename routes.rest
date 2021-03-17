@@ -1,0 +1,29 @@
+GET https://localhost/processi
+
+
+###
+
+GET https://localhost/nuovoprocesso
+
+###
+
+
+DELETE https://localhost/deleteall
+
+###
+
+POST  https://localhost/nuovoprocesso
+Content-Type: application/json
+
+{
+    "titolo": "Gestione scorte in cloud"
+}
+###
+
+PATCH  https://localhost/modificaprocesso
+Content-Type: application/json
+
+{
+   "id": "eb9ead41-8e37-40fa-ad0b-1f2afa837ea9",
+   "autori": ["Alberto Bregliano"]
+}

@@ -1,0 +1,60 @@
+.bd-placeholder-img {
+  font-size: 1.125rem;
+  text-anchor: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+@media (min-width: 768px) {
+  .bd-placeholder-img-lg {
+    font-size: 3.5rem;
+  }
+}
+
+.all-browsers {
+margin: 0;
+padding: 5px;
+background-color: lightgray;
+}
+
+.all-browsers > h1, .browser {
+margin: 10px;
+padding: 5px;
+}
+
+.browser {
+background: white;
+}
+
+.browser > h2, p {
+margin: 4px;
+font-size: 90%;
+}
+
+footer {
+text-align: center;
+padding: 3px;
+background-color: black;
+color: white;
+}
+
+table, th, td {
+border: 1px solid black;
+border-collapse: collapse;
+margin-left: auto;
+margin-right: auto;
+}
+th, td {
+padding: 5px;
+text-align: left;
+}
+
+aside {
+width: 30%;
+padding-left: 15px;
+margin-left: 15px;
+float: right;
+font-style: italic;
+background-color: lightgray;
+}

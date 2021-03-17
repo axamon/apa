@@ -1,0 +1,63 @@
+{{ template "header" }}
+
+    <main role="main" class="flex-shrink-0">
+      <div class="container">
+      {{.Status}}
+      {{/* <div align="right">
+        {{if (eq .Status "In vigore")}} <span style="color: green;">{{.Status }}</span> {{else }} <span style="color: red;">{{.Status }}</span>{{end}}
+      </div> */}}
+      <h3 align="center">{{.Titolo}}</h3>
+      <section name="Dettagli">
+        <details>
+          <summary>Dettagli</summary>
+          <ul>
+            <li>ID: {{.Id}}</li>
+            <li>Versione: {{.Versione}}</li>
+            <li>Ultima modifica: {{.Updated_at}}</li>
+            <li>Autori: {{.Autori}}</li>
+            <li>Revisori: {{.Verificatori}}</li>
+            <li>Approvatori: {{.Approvatori}}</li>
+          </ul>
+        </details>
+      </section>
+      <article>
+        <h5 id="testo">{{.Testo}}</h5>
+      </article>
+      <section name="Flusso">
+        <details>
+          <summary>Flusso</summary>
+          <div align="center">
+            <img width="50%" src="{{.FlussoImmagine}}" />
+          </div>
+        </details>
+      </section>
+      <section>
+        <div  id="MatriceRACI" align="center">
+          <table class="table table-striped table-hover table-dark" style="width:70%">
+            <caption style="caption-side:top">Tabella responsabilità</caption>
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">UO</th>
+                <th scope="col">Ruolo</th>
+                <th scope="col">Attività</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{ range $i, $a := .Attivitas }}
+              <tr>
+                <th scope="row">{{$a.Num}}</th>
+                <td>{{$a.UO}}</td>
+                <td>{{$a.Ruolo}}</td>
+                <td>{{$a.Titolo}}</td>
+              </tr>
+              
+              {{ end }}
+            </tbody>
+          </table>
+        </div>
+      </section>
+      </div>
+    </main>
+   {{ template "footer"}}
+
