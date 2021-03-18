@@ -62,8 +62,9 @@ var i chan string
 var ctx context.Context
 
 var c, a *mgo.Collection
+var mongoURL = "mongodb://10.38.105.251"
 var database = "db"
-var mongoURL = "mongodb://localhost"
+
 
 func main() {
 	session, err := mgo.Dial(mongoURL)
