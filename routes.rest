@@ -24,6 +24,10 @@ PATCH  https://localhost/modificaprocesso
 Content-Type: application/json
 
 {
-   "id": "eb9ead41-8e37-40fa-ad0b-1f2afa837ea9",
-   "autori": ["Alberto Bregliano"]
+   "id": "3b706600-6430-4dfd-9ed4-32ebdf8ff720",
+   "titolo": "Gestione scorte in cloud",
+   "autori": ["Alberto Bregliano"],
+   "approvatori": ["Valeria Allegretti", "Valeria Pipornetti"],
+   "verificatori": ["Guido Bruno"],
+   "flussoimmagine": "/static/flusso.png"
 }
