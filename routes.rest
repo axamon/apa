@@ -7,6 +7,19 @@ GET https://localhost/nuovoprocesso
 
 ###
 
+GET https://localhost/attivita
+
+###
+
+GET https://localhost/attivita/4a90f362-b97e-4e6c-a587-43478e9f36c5
+
+###
+
+
+GET https://localhost/processo/7371a348-af61-48ed-931a-47bb6744f960
+
+###
+
 
 DELETE https://localhost/deleteall
 

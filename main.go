@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"crypto/md5"
 	"encoding/gob"
 	"encoding/json"
 	"flag"
@@ -60,8 +61,8 @@ var i chan string
 
 var ctx context.Context
 
-var c *mgo.Collection
-var database, collection = "db", "processi"
+var c, a *mgo.Collection
+var database = "db"
 var mongoURL = "mongodb://localhost"
 
 func main() {
@@ -70,7 +71,8 @@ func main() {
 		log.Print("session", err)
 	}
 
-	c = session.DB(database).C(collection)
+	c = session.DB(database).C("processi")
+	a = session.DB(database).C("attivita")
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -95,6 +97,11 @@ func main() {
 		log.Println(err)
 	}
 
+	_, err = NewProcesso("Ciclo Passivo2")
+	if err != nil {
+		log.Println(err)
+	}
+
 	p, err := NewProcesso("Ciclo Passivo")
 	if err != nil {
 		log.Println(err)
@@ -113,6 +120,11 @@ func main() {
 		Ruolo:  R,
 	}
 
+	attivita1.Save()
+
+	fmt.Println()
+	fmt.Println(attivita1)
+
 	attivita2 := Attivita{
 		Id:     uuid.NewString(),
 		Num:    2,
@@ -121,7 +133,9 @@ func main() {
 		Ruolo:  R,
 	}
 
-	p.Attivitas = append(p.Attivitas, &attivita1, &attivita2)
+	attivita2.Save()
+
+	p.Attivitas = append(p.Attivitas, attivita1.Id, attivita2.Id)
 	p.Approva()
 	err = p.Update()
 	if err != nil {
@@ -140,6 +154,7 @@ func main() {
 		Num:         1,
 		Ruolo:       R,
 	}
+	attivita1a.Save()
 
 	attivita2a := Attivita{
 		UO:          "CTIO.5GDT.PDT",
@@ -150,7 +165,9 @@ func main() {
 		Ruolo:       R,
 	}
 
-	VerificaBudget.Attivitas = append(VerificaBudget.Attivitas, &attivita1a, &attivita2a)
+	attivita2a.Save()
+
+	VerificaBudget.Attivitas = append(VerificaBudget.Attivitas, attivita1a.Id, attivita2a.Id)
 	VerificaBudget.HaAMonte(&p)
 
 	VerificaBudget.Update()
@@ -169,6 +186,10 @@ func main() {
 	r.HandleFunc("/", index)
 	r.Handle("/favicon.ico", http.FileServer(http.Dir("./static/")))
 	r.HandleFunc("/processi", all)
+	r.HandleFunc("/processo/{ID}", getProcesso)
+
+	r.HandleFunc("/attivita", allAttivita)
+	r.HandleFunc("/attivita/{ID}", getAttivita)
 	r.HandleFunc("/nuovoprocesso", nuovoprocesso)
 	r.HandleFunc("/deleteall", deleteall)
 	r.HandleFunc("/modificaprocesso", modificaprocesso)
@@ -190,6 +211,7 @@ func deleteall(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "DELETE":
 		deleteAllProcessi()
+		deleteAllAttivita()
 		fmt.Fprint(w, http.StatusAccepted)
 
 	default:
@@ -274,6 +296,23 @@ func aggiornaTemplates() {
 	}
 }
 
+func allAttivita(w http.ResponseWriter, r *http.Request) {
+
+	attivita, err := GetAllAttivita()
+	fmt.Println(attivita)
+	if err != nil {
+		log.Println(attivita, err)
+		fmt.Fprint(w, http.StatusNotFound)
+		return
+	}
+	bData, err := json.Marshal(attivita)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Fprint(w, string(bData))
+
+}
+
 func all(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -306,6 +345,43 @@ func all(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 	tpl.ExecuteTemplate(w, "allprocessi.gohtml", processi)
 	fmt.Println(time.Since(start))
+
+}
+
+func getProcesso(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	fmt.Println(params["ID"])
+
+	id := params["ID"]
+
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Cache-Control", "public, max-age=31536000")
+
+	p, err := GetProcesso(id)
+	if err != nil {
+		fmt.Fprint(w, http.StatusNotFound)
+		return
+	}
+
+	fmt.Fprint(w, p)
+
+}
+
+func getAttivita(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	fmt.Println(params["ID"])
+
+	id := params["ID"]
+
+	p, err := GetAttivita(id)
+	if err != nil {
+		fmt.Fprint(w, http.StatusNotFound)
+		return
+	}
+
+	fmt.Fprint(w, p)
 
 }
 
@@ -401,7 +477,7 @@ func NewProcesso(titolo string) (p Processo, err error) {
 			return Processo{}, fmt.Errorf("titolo \"%s\" già esistente con id %s", titolo, processo.Id)
 		}
 	}
-	p.Id = uuid.NewString()
+	p.Id = fmt.Sprintf("%x", md5.Sum([]byte(titolo)))
 	p.Titolo = titolo
 	p.Versione = 1
 	p.Status = Nuovo
@@ -409,6 +485,16 @@ func NewProcesso(titolo string) (p Processo, err error) {
 	p.Updated_at = time.Now()
 	err = p.Save()
 	return p, err
+}
+
+// GetAttivita recupera il processo con id.
+func GetAttivita(id string) (Attivita, error) {
+	var attivita Attivita
+	err := a.Find(bson.M{"id": id}).One(&attivita)
+	if err != nil {
+		log.Printf("GetAttivita per id: %s in errore: %v \n", id, err)
+	}
+	return attivita, err
 }
 
 // GetProcesso recupera il processo con id.
@@ -431,6 +517,16 @@ func GetAllProcessi() ([]Processo, error) {
 	return processi, err
 }
 
+// GetAllAttivita recupera tutti i processi.
+func GetAllAttivita() ([]Attivita, error) {
+	var attivita []Attivita
+	err := a.Find(nil).All(&attivita)
+	if err != nil {
+		log.Printf("GetAllAttivita in errore: %v \n", err)
+	}
+	return attivita, err
+}
+
 // UpdateProcesso modifica un processo.
 func UpdateProcesso(id string, p *Processo) {
 	p.Id = id
@@ -449,7 +545,7 @@ func DeleteProcesso(id string) error {
 	return err
 }
 
-// deleteAllProcessi recupera tutti i processi.
+// deleteAllProcessi cancella tutti i processi.
 func deleteAllProcessi() error {
 	var processi []Processo
 	err := c.Find(nil).All(&processi)
@@ -458,6 +554,20 @@ func deleteAllProcessi() error {
 	}
 	for _, p := range processi {
 		c.Remove(bson.M{"id": p.Id})
+	}
+	return err
+}
+
+// deleteAllAttivita cancella tuttele attivita.
+func deleteAllAttivita() error {
+	var attivitas []Attivita
+	err := a.Find(nil).All(&attivitas)
+	if err != nil {
+		log.Printf("deleteAllAttivita in errore: %v \n", err)
+	}
+	a.RemoveAll(nil)
+	for _, attivita := range attivitas {
+		a.Remove(bson.M{"id": attivita.Id})
 	}
 	return err
 }
