@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -20,13 +21,12 @@ func (p Processo) QuantiOutput() int {
 // UOCoinvolte restituisce la lista delle Unità organizzative
 // coinvolte in un processo.
 func (p Processo) UOCoinvolte() []string {
-	m := make(map[string]struct{})
-	for _, a := range p.Attivitas {
-		m[a.UO] = struct{}{}
-	}
 	var uos []string
-	for uo := range m {
-		uos = append(uos, uo)
+	for _, id := range p.Attivitas {
+		var att Attivita
+		a.Find(bson.M{"id": id}).One(&att)
+		uos = append(uos, att.UO)
+		fmt.Println(a)
 	}
 	return uos
 }
@@ -78,6 +78,14 @@ func (p *Processo) Update() error {
 	err := c.Update(bson.M{"id": p.Id}, &p)
 	if err != nil {
 		log.Printf("Update di %s in errore: %v\n", p.Id, err)
+	}
+	return err
+}
+
+func (att Attivita) Save() error {
+	err := a.Insert(&att)
+	if err != nil {
+		log.Printf("Save di %s in errore: %v\n", att.Id, err)
 	}
 	return err
 }
