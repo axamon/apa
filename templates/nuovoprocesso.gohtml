@@ -1,0 +1,37 @@
+{{ template "header" }}
+
+    <main role="main" class="flex-shrink-0">
+      <div class="container">
+      {{/* <div align="right">
+        {{if (eq .Status "In vigore")}} <span style="color: green;">{{.Status }}</span> {{else }} <span style="color: red;">{{.Status }}</span>{{end}}
+      </div> */}}
+        <h3 align="center">Crea un nuovo prcesso</h3>
+        <section>
+          <div class="container h-50">
+            <div class="row h-50 justify-content-center align-items-center">
+                <div class="col-10 col-md-8 col-lg-6">
+                  <!-- Form -->
+                  <form class="form-horizontal" method="POST" enctype="application/json">
+                     <div class="form-group row">
+                        <label class="col-sm-3 col-form-label-lg" for="titolo" >Titolo:</label>
+                        <div class="col-sm-7">
+                          <input class="form-control-lg" id="titolo"  type="insert" required name="titolo" placeholder="Titolo del Processo">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label-lg" for="invia" >Invia:</label>
+                        <div class="col-sm-7">
+                          <input id="invia" class="btn btn-primary btn-lg btn-block" type="submit" value="Crea processo">
+                        </div>
+                      </div>
+                  </form>
+                  <!-- Form end -->
+                  <br>
+                </div>
+            </div>
+          </div>  
+        </section>
+      </div>
+    </main>
+   {{ template "footer"}}
+

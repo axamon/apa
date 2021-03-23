@@ -63,7 +63,7 @@ var ctx context.Context
 
 var c, a *mgo.Collection
 var database = "db"
-var mongoURL = "mongodb://localhost"
+var mongoURL = "mongodb://SuperAdmin:Meriadoc27$@10.38.105.251"
 
 func main() {
 	session, err := mgo.Dial(mongoURL)
@@ -92,10 +92,10 @@ func main() {
 		}
 	}()
 
-	err = deleteAllProcessi()
-	if err != nil {
-		log.Println(err)
-	}
+	// err = deleteAllProcessi()
+	// if err != nil {
+	// 	log.Println(err)
+	// }
 
 	_, err = NewProcesso("Ciclo Passivo2")
 	if err != nil {
@@ -183,14 +183,21 @@ func main() {
 	//fs := http.FileServer(http.Dir("./static"))
 	//r.Handle("/static/", http.StripPrefix("/static", fs))
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
-	r.HandleFunc("/", index)
+	r.HandleFunc("/", all)
 	r.Handle("/favicon.ico", http.FileServer(http.Dir("./static/")))
-	r.HandleFunc("/processi", all)
-	r.HandleFunc("/processo/{ID}", getProcesso)
+
+	// Get processo
+	r.HandleFunc("/processi/{ID}", getProcesso)
+
+	// Post nuovo processo
+	r.HandleFunc("/processi/new/", newProcesso)
+
+	// Get tutti i processi
+	r.HandleFunc("/processi", allProcessi)
 
 	r.HandleFunc("/attivita", allAttivita)
 	r.HandleFunc("/attivita/{ID}", getAttivita)
-	r.HandleFunc("/nuovoprocesso", nuovoprocesso)
+
 	r.HandleFunc("/deleteall", deleteall)
 	r.HandleFunc("/modificaprocesso", modificaprocesso)
 
@@ -252,32 +259,45 @@ func modificaprocesso(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func nuovoprocesso(w http.ResponseWriter, r *http.Request) {
+func newProcesso(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
 
-		headerContentTtype := r.Header.Get("Content-Type")
-		if headerContentTtype != "application/json" {
-			fmt.Fprint(w, "Content Type is not application/json", http.StatusUnsupportedMediaType)
-			return
+		var titolo string
+
+		switch r.Header.Get("Content-Type") {
+		case "application/json":
+			var p Processo
+			decoder := json.NewDecoder(r.Body)
+			decoder.DisallowUnknownFields()
+			err := decoder.Decode(&p)
+			if err != nil {
+				log.Println(err)
+			}
+			titolo = p.Titolo
+
+		default:
+			// Call ParseForm() to parse the raw query and update r.PostForm and r.Form.
+			if err := r.ParseForm(); err != nil {
+				fmt.Fprintf(w, "ParseForm() err: %v", err)
+				return
+			}
+			titolo = r.FormValue("titolo")
 		}
 
-		var p Processo
-		decoder := json.NewDecoder(r.Body)
-		decoder.DisallowUnknownFields()
-		err := decoder.Decode(&p)
-		if err != nil {
-			log.Println(err)
-		}
+		fmt.Println(titolo)
 
-		np, err := NewProcesso(p.Titolo)
+		np, err := NewProcesso(titolo)
 		if err != nil {
 			fmt.Fprint(w, http.StatusConflict)
 			return
 		}
-		//c.Upsert(bson.M{"id": p.Id}, &np)
-
 		fmt.Fprintf(w, "%+v", np)
+
+	case "GET":
+		fmt.Println("chiamato nuovo processo")
+		tpl.ExecuteTemplate(w, "nuovoprocesso.gohtml", nil)
+		return
 
 	default:
 		fmt.Fprint(w, http.StatusForbidden)
@@ -299,13 +319,28 @@ func aggiornaTemplates() {
 func allAttivita(w http.ResponseWriter, r *http.Request) {
 
 	attivita, err := GetAllAttivita()
-	fmt.Println(attivita)
 	if err != nil {
 		log.Println(attivita, err)
 		fmt.Fprint(w, http.StatusNotFound)
 		return
 	}
 	bData, err := json.Marshal(attivita)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Fprint(w, string(bData))
+
+}
+
+func allProcessi(w http.ResponseWriter, r *http.Request) {
+
+	processi, err := GetAllProcessi()
+	if err != nil {
+		log.Println(processi, err)
+		fmt.Fprint(w, http.StatusNotFound)
+		return
+	}
+	bData, err := json.Marshal(processi)
 	if err != nil {
 		log.Println(err)
 	}

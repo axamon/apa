@@ -25,7 +25,7 @@ DELETE https://localhost/deleteall
 
 ###
 
-POST  https://localhost/nuovoprocesso
+POST  https://localhost/processi/new/
 Content-Type: application/json
 
 {
